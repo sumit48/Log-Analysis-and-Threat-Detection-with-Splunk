@@ -1,0 +1,85 @@
+# 1. Count of events over time (Hourly)
+index=your_index sourcetype=your_sourcetype
+| timechart count span=1h
+
+# 2. Top 10 most frequent events
+index=your_index sourcetype=your_sourcetype
+| top 10 _raw
+
+# 3. Count of events by source IP
+index=your_index sourcetype=your_sourcetype
+| stats count by src_ip
+
+# 4. Events with specific keyword
+index=your_index sourcetype=your_sourcetype keyword="your_keyword"
+
+# 5. Average response time by endpoint
+index=your_index sourcetype=your_sourcetype
+| stats avg(response_time) as avg_response_time by endpoint
+
+# 6. Events with HTTP status code 500
+index=your_index sourcetype=your_sourcetype status=500
+| table _time, endpoint, status
+
+# 7. Count of events by user agent
+index=your_index sourcetype=your_sourcetype
+| stats count by user_agent
+
+# 8. Events from a specific source IP range
+index=your_index sourcetype=your_sourcetype src_ip=10.0.0.0/24
+| table _time, src_ip, endpoint
+
+# 9. Events with high CPU usage
+index=your_index sourcetype=your_sourcetype
+| search cpu_usage>90
+| table _time, host, cpu_usage
+
+# 10. Events with authentication failures
+index=your_index sourcetype=your_sourcetype authentication_failure=true
+| table _time, user, src_ip, endpoint
+
+# 11. Count of events by country
+index=your_index sourcetype=your_sourcetype
+| iplocation src_ip
+| stats count by Country
+
+# 12. Events with specific error codes
+index=your_index sourcetype=your_sourcetype error_code=404 OR error_code=500
+| table _time, endpoint, error_code
+
+# 13. Count of events by log level
+index=your_index sourcetype=your_sourcetype
+| stats count by log_level
+
+# 14. Events with high memory consumption
+index=your_index sourcetype=your_sourcetype
+| search memory_usage>80
+| table _time, host, memory_usage
+
+# 15. Events from a specific user
+index=your_index sourcetype=your_sourcetype user="specific_user"
+| table _time, user, src_ip, endpoint
+
+# 16. Events with long response times
+index=your_index sourcetype=your_sourcetype
+| where response_time > 5000
+| table _time, endpoint, response_time
+
+# 17. Count of events by application name
+index=your_index sourcetype=your_sourcetype
+| rex field=_raw "application_name=(?<app_name>[^ ]+)"
+| stats count by app_name
+
+# 18. Events with large file downloads
+index=your_index sourcetype=your_sourcetype
+| where bytes_downloaded > 10000000
+| table _time, src_ip, endpoint, bytes_downloaded
+
+# 19. Events from specific departments
+index=your_index sourcetype=your_sourcetype department=("Sales" OR "Marketing")
+| table _time, department, user, endpoint
+
+# 20. Events with high network traffic
+index=your_index sourcetype=your_sourcetype
+| where bytes_transferred > 100000000
+| table _time, src_ip, dest_ip, bytes_transferred
